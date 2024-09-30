@@ -1,0 +1,76 @@
+<%- include('../../components/header.ejs') %>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Crear Nueva Película</h2>
+    <div class="card">
+        <div class="card-body">
+            <form id="peliculaForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="titulo">Título de la Película</label>
+                        <input type="text" class="form-control" id="titulo" name="titulo" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="releaseDate">Fecha de Lanzamiento</label>
+                        <input type="date" class="form-control" id="releaseDate" name="releaseDate" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="sinopsis">Sinopsis</label>
+                    <textarea class="form-control" id="sinopsis" name="sinopsis" rows="4" required></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="imagen">Imagen URL</label>
+                        <input type="url" class="form-control" id="imagen" name="imagen" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="rottenTomatoesRating">Calificación de Rotten Tomatoes</label>
+                        <input type="number" class="form-control" id="rottenTomatoesRating" name="rottenTomatoesRating" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="youtubeTrailer">YouTube Trailer URL</label>
+                    <input type="url" class="form-control" id="youtubeTrailer" name="youtubeTrailer" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Crear Película</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    document.getElementById('peliculaForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Evitar el comportamiento por defecto del formulario
+
+        // Obtener los valores de los campos del formulario
+        const titulo = document.getElementById('titulo').value;
+        const sinopsis = document.getElementById('sinopsis').value;
+        const imagen = document.getElementById('imagen').value;
+        const releaseDate = document.getElementById('releaseDate').value;
+        const rottenTomatoesRating = document.getElementById('rottenTomatoesRating').value;
+        const youtubeTrailer = document.getElementById('youtubeTrailer').value;
+
+        // Realizar la solicitud POST con Axios
+        axios.post('http://localhost:4000/peliculas', {
+            titulo: titulo,
+            sinopsis: sinopsis,
+            imagen: imagen,
+            releaseDate: releaseDate,
+            rottenTomatoesRating: rottenTomatoesRating,
+            youtubeTrailer: youtubeTrailer
+        })
+        .then(function (response) {
+            console.log('Película creada exitosamente', response.data);
+            alert('Película creada correctamente');
+            document.getElementById('peliculaForm').reset(); // Limpiar el formulario
+        })
+        .catch(function (error) {
+            console.error('Error al crear la película', error);
+            alert('Hubo un error al crear la película');
+        });
+    });
+</script>
+
+<%- include('../../components/footer.ejs') %>

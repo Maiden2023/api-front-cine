@@ -1,0 +1,100 @@
+<%- include('../../components/header.ejs') %> 
+<h3>Seleccionar Actor para Editar</h3>
+
+<!-- Dropdown para seleccionar un actor -->
+<select id="actorSelect">
+  <option value="">Seleccione un actor</option>
+  <% actors.forEach(function(actor) { %>
+    <option value="<%= actor.id %>"><%= actor.name %></option>
+  <% }); %>
+</select>
+
+<!-- Formulario para editar los detalles del actor seleccionado -->
+<form id="editActorForm" style="display: none;">
+  <h3>Editar Actor</h3>
+  
+  <label for="actorName">Nombre del Actor:</label>
+  <input type="text" id="actorName" name="name" value="">
+
+  <label for="actorPhoto">URL de la Foto:</label>
+  <input type="text" id="actorPhoto" name="photo" value="">
+  
+  <button type="submit">Guardar Cambios</button>
+</form>
+
+<!-- Botón para eliminar al actor -->
+<button id="deleteActorBtn" style="display: none;">Eliminar Actor</button>
+
+<!-- Script para manejar las solicitudes con Axios -->
+<script>
+  const actorSelect = document.getElementById('actorSelect');
+  const editActorForm = document.getElementById('editActorForm');
+  const deleteActorBtn = document.getElementById('deleteActorBtn');
+
+  // Cuando el usuario selecciona un actor de la lista
+  actorSelect.addEventListener('change', function() {
+    const actorId = actorSelect.value;
+
+    if (actorId) {
+      // Mostrar el formulario y el botón de eliminar
+      editActorForm.style.display = 'block';
+      deleteActorBtn.style.display = 'block';
+
+      // Hacer una solicitud para obtener los detalles del actor seleccionado
+      axios.get(`/actors/${actorId}`)
+        .then(function(response) {
+          // Rellenar los campos del formulario con los datos del actor
+          const actor = response.data;
+          document.getElementById('actorName').value = actor.name;
+          document.getElementById('actorPhoto').value = actor.photo;
+        })
+        .catch(function(error) {
+          console.error('Error al obtener los detalles del actor:', error);
+        });
+    } else {
+      // Si no se selecciona ningún actor, ocultar el formulario
+      editActorForm.style.display = 'none';
+      deleteActorBtn.style.display = 'none';
+    }
+  });
+
+  // Manejar la edición del actor
+  editActorForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const actorId = actorSelect.value;
+    const name = document.getElementById('actorName').value;
+    const photo = document.getElementById('actorPhoto').value;
+
+    // Enviar la solicitud PUT con Axios para actualizar al actor
+    axios.put(`/actors/${actorId}`, {
+      name: name,
+      photo: photo
+    })
+    .then(function(response) {
+      alert('Actor actualizado con éxito');
+      // Aquí puedes hacer cualquier otra acción tras la actualización
+    })
+    .catch(function(error) {
+      console.error('Error al actualizar el actor:', error);
+    });
+  });
+
+  // Manejar la eliminación del actor
+  deleteActorBtn.addEventListener('click', function() {
+    const actorId = actorSelect.value;
+
+    if (confirm('¿Estás seguro de que deseas eliminar este actor?')) {
+      // Enviar la solicitud DELETE con Axios para eliminar al actor
+      axios.delete(`/actors/${actorId}`)
+      .then(function(response) {
+        alert('Actor eliminado con éxito');
+        // Actualizar la página o la lista de actores después de eliminar
+        location.reload();
+      })
+      .catch(function(error) {
+        console.error('Error al eliminar el actor:', error);
+      });
+    }
+  });
+</script>

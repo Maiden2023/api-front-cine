@@ -1,0 +1,59 @@
+<%- include('../../components/header.ejs') %>
+
+<div class="container mt-5">
+    <h1>Eliminar Director</h1>
+    <div class="row" id="catalogoDirectores"></div>
+    <div id="error-message" class="alert alert-danger" style="display: none;"></div> <!-- Mensaje de error -->
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    // Función para obtener los directores
+    async function obtenerDirectores() {
+        try {
+            const response = await axios.get('http://localhost:4000/directores');
+            const directores = response.data;
+            const catalogoDirectores = document.getElementById('catalogoDirectores');
+
+            directores.forEach(director => {
+                const tarjeta = document.createElement('div');
+                tarjeta.className = 'col-md-4 mb-4';
+                tarjeta.innerHTML = `
+                    <div class="card">
+                        <img src="${director.foto}" class="card-img-top" alt="${director.nombre}" style="height: 300px; object-fit: cover;">
+                        <div class="card-body">
+                            <p class="card-text"><strong>Nombre:</strong> ${director.nombre}</p>
+                            <button class="btn btn-danger" onclick="eliminarDirector(${director.id})">Eliminar Director</button>
+                        </div>
+                    </div>
+                `;
+                catalogoDirectores.appendChild(tarjeta);
+            });
+        } catch (error) {
+            console.error('Error al obtener los directores:', error);
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.innerText = 'Error al cargar los directores. Intenta de nuevo más tarde.';
+            errorMessage.style.display = 'block';
+        }
+    }
+
+    // Función para eliminar un director
+    async function eliminarDirector(id) {
+        if (confirm('¿Estás seguro de que deseas eliminar este director?')) {
+            try {
+                const response = await axios.delete(`http://localhost:4000/directores/${id}`);
+                console.log('Director eliminado exitosamente', response.data);
+                alert('Director eliminado correctamente');
+                obtenerDirectores(); // Actualizar la lista de directores después de eliminar
+            } catch (error) {
+                console.error('Error al eliminar el director:', error);
+                alert('Hubo un error al eliminar el director. Intenta de nuevo.');
+            }
+        }
+    }
+
+    // Llama a la función al cargar la página
+    window.onload = obtenerDirectores;
+</script>
+
+<%- include('../../components/footer.ejs') %>

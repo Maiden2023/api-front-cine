@@ -1,0 +1,39 @@
+<%- include('../../components/header.ejs') %>
+<div>
+  <form id="directorForm">
+    <div class="form-group">
+      <label for="nombre">Nombre del Director</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" required>
+    </div>
+    <div class="form-group">
+      <label for="foto">Foto URL</label>
+      <input type="url" class="form-control" id="foto" name="foto" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Crear Director</button>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  document.getElementById('directorForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const nombre = document.getElementById('nombre').value;
+    const foto = document.getElementById('foto').value;
+    console.log(' datos enviados ')
+    axios.post('http://localhost:4000/directores', {
+
+    nombre: nombre,
+    foto: foto
+})
+    .then(function (response) {
+      console.log('Director creado exitosamente', response.data);
+      alert('Director creado correctamente');
+      // Aquí puedes redirigir a otra página o limpiar el formulario si es necesario.
+    })
+    .catch(function (error) {
+      console.error('Error al crear el director', error);
+      alert('Hubo un error al crear el director');
+    });
+  });
+</script>

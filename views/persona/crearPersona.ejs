@@ -1,0 +1,58 @@
+<%- include('../../components/header.ejs') %> 
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Crear Director / Actor</h2>
+    
+    <form action="/personas/crear" method="POST" enctype="multipart/form-data">
+        <div class="row">
+            <!-- Nombre -->
+            <div class="col-md-6 mb-3">
+                <label for="nombre" class="form-label">Nombre Completo</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required>
+            </div>
+
+            <!-- Foto -->
+            <div class="col-md-6 mb-3">
+                <label for="foto" class="form-label">Subir Foto</label>
+                <input type="file" class="form-control" id="foto" name="foto" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Fecha de nacimiento -->
+            <div class="col-md-6 mb-3">
+                <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
+                <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+            </div>
+
+            <!-- Rol (Actor/Director) -->
+            <div class="col-md-6 mb-3">
+                <label for="rol" class="form-label">Rol</label>
+                <select class="form-select" id="rol" name="rol" required>
+                    <option value="actor">Actor</option>
+                    <option value="director">Director</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Nacionalidad -->
+            <div class="col-md-6 mb-3">
+                <label for="nacionalidad" class="form-label">Nacionalidad</label>
+                <input type="text" class="form-control" id="nacionalidad" name="nacionalidad" required>
+            </div>
+
+            <!-- Descripción o Biografía -->
+            <div class="col-md-6 mb-3">
+                <label for="descripcion" class="form-label">Descripción / Biografía</label>
+                <textarea class="form-control" id="descripcion" name="descripcion" rows="4" required></textarea>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success">Crear</button>
+        </div>
+    </form>
+</div>
+
+

@@ -1,0 +1,117 @@
+<%- include('../../components/header.ejs') %>
+
+<div class="container mt-5">
+    <h1>Catálogo de Directores</h1>
+    <div class="row" id="catalogoDirectores"></div>
+    <div id="error-message" class="alert alert-danger" style="display: none;"></div> <!-- Mensaje de error -->
+</div>
+
+<!-- Modal for Editing a Director -->
+<div class="modal fade" id="editarModal" tabindex="-1" aria-labelledby="editarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarModalLabel">Editar Director</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body-content">
+                <!-- Contenido del formulario de edición se inyectará aquí -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="guardarCambios()">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    let directorId; // Variable para almacenar el ID del director que se está editando
+
+    // Función para obtener los directores
+    async function obtenerDirectores() {
+        try {
+            const response = await axios.get('http://localhost:4000/directores');
+            const directores = response.data;
+            const catalogoDirectores = document.getElementById('catalogoDirectores');
+
+            catalogoDirectores.innerHTML = ''; // Limpiar el contenido anterior
+
+            directores.forEach(director => {
+                const tarjeta = document.createElement('div');
+                tarjeta.className = 'col-md-4 mb-4';
+                tarjeta.innerHTML = `
+                    <div class="card">
+                        <img src="${director.foto}" class="card-img-top" alt="${director.nombre}" style="height: 300px; object-fit: cover;">
+                        <div class="card-body">
+                            <p class="card-text"><strong>Nombre:</strong> ${director.nombre}</p>
+                            <button class="btn btn-warning" onclick="cargarDatosEdicion(${director.id})">Editar Director</button>
+                        </div>
+                    </div>
+                `;
+                catalogoDirectores.appendChild(tarjeta);
+            });
+        } catch (error) {
+            console.error('Error al obtener los directores:', error);
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.innerText = 'Error al cargar los directores. Intenta de nuevo más tarde.';
+            errorMessage.style.display = 'block';
+        }
+    }
+
+    // Función para cargar los datos de un director en el modal de edición
+    async function cargarDatosEdicion(id) {
+        directorId = id; // Almacenar el ID del director a editar
+        try {
+            const response = await axios.get(`http://localhost:4000/directores/${id}`);
+            const director = response.data;
+
+            // Rellenar el contenido del modal
+            const modalBody = document.getElementById('modal-body-content');
+            modalBody.innerHTML = `
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" value="${director.nombre}">
+                </div>
+                <div class="mb-3">
+                    <label for="foto" class="form-label">Foto URL</label>
+                    <input type="text" class="form-control" id="foto" value="${director.foto}">
+                </div>
+            `;
+
+            // Mostrar el modal
+            const editarModal = new bootstrap.Modal(document.getElementById('editarModal'));
+            editarModal.show();
+        } catch (error) {
+            console.error('Error al obtener los detalles del director:', error);
+        }
+    }
+
+    // Función para guardar los cambios realizados en el director
+    async function guardarCambios() {
+        const nombre = document.getElementById('nombre').value;
+        const foto = document.getElementById('foto').value;
+
+        const directorActualizado = {
+            nombre,
+            foto
+        };
+
+        try {
+            await axios.put(`http://localhost:4000/directores/${directorId}`, directorActualizado);
+            alert('Director actualizado correctamente');
+            obtenerDirectores(); 
+            const editarModal = bootstrap.Modal.getInstance(document.getElementById('editarModal'));
+            editarModal.hide(); // Cerrar el modal
+        } catch (error) {
+            console.error('Error al actualizar el director:', error);
+            alert('Hubo un error al actualizar el director. Intenta de nuevo.');
+        }
+    }
+
+    // Llama a la función al cargar la página
+    window.onload = obtenerDirectores;
+</script>
+
+<%- include('../../components/footer.ejs') %>

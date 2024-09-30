@@ -1,0 +1,95 @@
+<%- include('../../components/header.ejs') %>
+
+<div class="form-container">
+    <h2 class="form-title">Editar Película</h2>
+    <form id="peliculaForm">
+        <div class="form-group">
+            <label for="titulo">Título de la Película</label>
+            <input type="text" class="form-control" id="titulo" name="titulo" required>
+        </div>
+        <div class="form-group">
+            <label for="sinopsis">Sinopsis</label>
+            <textarea class="form-control" id="sinopsis" name="sinopsis" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="imagen">Imagen URL</label>
+            <input type="url" class="form-control" id="imagen" name="imagen" required>
+        </div>
+        <div class="form-group">
+            <label for="releaseDate">Fecha de lanzamiento</label>
+            <input type="date" class="form-control" id="releaseDate" name="releaseDate" required>
+        </div>
+        <div class="form-group">
+            <label for="rottenTomatoesRating">Calificación de Rotten Tomatoes</label>
+            <input type="number" class="form-control" id="rottenTomatoesRating" name="rottenTomatoesRating" required>
+        </div>
+        <div class="form-group">
+            <label for="youtubeTrailer">YouTube Trailer URL</label>
+            <input type="url" class="form-control" id="youtubeTrailer" name="youtubeTrailer" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    // Obtener el ID de la película de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+
+    // Función para obtener los detalles de la película
+    async function obtenerPelicula() {
+        try {
+            const response = await axios.get(`http://localhost:4000/peliculas/${id}`);
+            const pelicula = response.data;
+
+            // Rellenar el formulario con los datos de la película
+            document.getElementById('titulo').value = pelicula.titulo;
+            document.getElementById('sinopsis').value = pelicula.sinopsis;
+            document.getElementById('imagen').value = pelicula.imagen;
+            document.getElementById('releaseDate').value = pelicula.releaseDate;
+            document.getElementById('rottenTomatoesRating').value = pelicula.rottenTomatoesRating;
+            document.getElementById('youtubeTrailer').value = pelicula.youtubeTrailer;
+        } catch (error) {
+            console.error('Error al obtener la película:', error);
+            alert('Error al cargar los detalles de la película.');
+        }
+    }
+
+    document.getElementById('peliculaForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Evitar el comportamiento por defecto del formulario
+
+        // Obtener los valores de los campos del formulario
+        const titulo = document.getElementById('titulo').value;
+        const sinopsis = document.getElementById('sinopsis').value;
+        const imagen = document.getElementById('imagen').value;
+        const releaseDate = document.getElementById('releaseDate').value;
+        const rottenTomatoesRating = document.getElementById('rottenTomatoesRating').value;
+        const youtubeTrailer = document.getElementById('youtubeTrailer').value;
+
+        // Realizar la solicitud PUT con Axios para actualizar la película
+        axios.put(`http://localhost:4000/peliculas/${id}`, {
+            titulo: titulo,
+            sinopsis: sinopsis,
+            imagen: imagen,
+            releaseDate: releaseDate,
+            rottenTomatoesRating: rottenTomatoesRating,
+            youtubeTrailer: youtubeTrailer
+        })
+        .then(function (response) {
+            console.log('Película actualizada exitosamente', response.data);
+            alert('Película actualizada correctamente');
+            // Redirigir al catálogo o cualquier otra página después de actualizar
+            window.location.href = '/catalogo'; // Cambia a la URL de tu catálogo
+        })
+        .catch(function (error) {
+            console.error('Error al actualizar la película', error);
+            alert('Hubo un error al actualizar la película');
+        });
+    });
+
+    // Llama a la función al cargar la página
+    window.onload = obtenerPelicula;
+</script>
+
+<%- include('../../components/footer.ejs') %>

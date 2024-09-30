@@ -1,0 +1,48 @@
+<%- include('../../components/header.ejs') %> 
+
+<div>
+    <h2 class="form-title">Crear Nuevo Actor</h2>
+    <form id="actorForm">
+        <div class="form-group">
+          <label for="nombre">Nombre del Actor</label>
+          <input type="text" class="form-control" id="nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+          <label for="foto">Foto URL</label>
+          <input type="url" class="form-control" id="foto" name="foto" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Crear Actor</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  document.getElementById('actorForm').addEventListener('submit', function (event) {
+    event.preventDefault(); // Evitar el comportamiento por defecto del formulario
+
+    // Obtener los valores de los campos del formulario
+    const nombre = document.getElementById('nombre').value;
+    const foto = document.getElementById('foto').value;
+    console.log("daos enviados ",nombre, foto);
+    
+    if (!nombre || !foto) {
+      alert('Por favor, complete todos los campos.');
+      return;
+    }
+    // Realizar la solicitud POST con Axios
+    axios.post('http://localhost:4000/actores', {
+      nombre: nombre,
+      foto: foto
+    })
+    .then(function (response) {
+      console.log('Actor creado exitosamente', response.data);
+      alert('Actor creado correctamente');
+      // Aquí puedes redirigir a otra página o limpiar el formulario si es necesario.
+      document.getElementById('actorForm').reset(); // Limpiar el formulario
+    })
+    .catch(function (error) {
+      console.error('Error al crear el actor', error);
+      alert('Hubo un error al crear el actor'+ error.response.data.message);
+    });
+  });
+</script>

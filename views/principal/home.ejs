@@ -1,0 +1,90 @@
+<%- include('../../components/header.ejs') %>
+
+<div class="container mt-5">
+    <h1>Catálogo de Películas</h1>
+    <div class="row" id="catalogoPeliculas"></div>
+    <div id="error-message" class="alert alert-danger" style="display: none;"></div> <!-- Mensaje de error -->
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="detalleModal" tabindex="-1" aria-labelledby="detalleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detalleModalLabel">Detalles de la Película</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body-content">
+                <!-- Contenido de los detalles de la película se inyectará aquí -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    // Función para obtener las películas
+    async function obtenerPeliculas() {
+        try {
+            const response = await axios.get('http://localhost:4000/peliculas');
+            const peliculas = response.data;
+            const catalogoPeliculas = document.getElementById('catalogoPeliculas');
+
+            peliculas.forEach(pelicula => {
+                const tarjeta = document.createElement('div');
+                tarjeta.className = 'col-md-4 mb-4';
+                tarjeta.innerHTML = `
+                    <div class="card">
+                        <img src="${pelicula.imagen}" class="card-img-top" alt="${pelicula.titulo}" style="height: 300px; object-fit: cover;">
+                        <div class="card-body">
+                            <p class="card-text"><strong>Calificación:</strong> ${pelicula.rottenTomatoesRating}</p>
+                            <button class="btn btn-primary" onclick="verDetalles(${pelicula.id})">Ver Detalles</button>
+                        </div>
+                    </div>
+                `;
+                catalogoPeliculas.appendChild(tarjeta);
+            });
+        } catch (error) {
+            console.error('Error al obtener las películas:', error);
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.innerText = 'Error al cargar las películas. Intenta de nuevo más tarde.';
+            errorMessage.style.display = 'block';
+        }
+    }
+
+    // Función para ver los detalles de una película
+    async function verDetalles(id) {
+        try {
+            const response = await axios.get(`http://localhost:4000/peliculas/${id}`);
+            const pelicula = response.data;
+                // Extraer el ID del video si es necesario
+        const youtubeId = pelicula.youtubeTrailer.split('v=')[1].split('&')[0]; // Solo si necesitas extraerlo
+        const youtubeUrl = `https://www.youtube.com/embed/${youtubeId}`; // Formato del iframe
+
+
+            // Rellenar el contenido del modal
+            const modalBody = document.getElementById('modal-body-content');
+            modalBody.innerHTML = `
+                <h5>${pelicula.titulo}</h5>
+                <p><strong>Sinopsis:</strong> ${pelicula.sinopsis}</p>
+                <p><strong>Fecha de Estreno:</strong> ${pelicula.releaseDate}</p>
+                <p><strong>Calificación:</strong> ${pelicula.rottenTomatoesRating}</p>
+                <iframe width="100%" height="315" src="${youtubeUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                `;
+
+            // Mostrar el modal
+            const detalleModal = new bootstrap.Modal(document.getElementById('detalleModal'));
+            detalleModal.show();
+        } catch (error) {
+            console.error('Error al obtener los detalles de la película:', error);
+        }
+    }
+
+    // Llama a la función al cargar la página
+    window.onload = obtenerPeliculas;
+</script>
+
+<%- include('../../components/footer.ejs') %>

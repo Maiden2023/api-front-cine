@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Cine</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/principal">Home</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Peliculas
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/peliculas/crear">Crear pelicula</a></li>
+                  <li><a class="dropdown-item" href="/peliculas/editar">Editar pelicula</a></li>
+                  <li><a class="dropdown-item" href="/peliculas/eliminar">Eliminar pelicula</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Director
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/directores/crear">Crear director</a></li>
+                  <li><a class="dropdown-item" href="/directores/editar">Editar director</a></li>
+                  <li><a class="dropdown-item" href="/directores/eliminar">Eliminar director</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Actor
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/actores/crear">Crear actor</a></li>
+                  <li><a class="dropdown-item" href="/actores/editar">Editar actor</a></li>
+                  <li><a class="dropdown-item" href="/actores/eliminar">Eliminar actor</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Reparto
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/reparto/crear">Crear reparto</a></li>
+                  <li><a class="dropdown-item" href="/reparto/editar">Editar reparto</a></li>
+                  <li><a class="dropdown-item" href="/reparto/eliminar">Eliminar reparto</a></li>
+                </ul>
+              </li>
+            </ul>
+            <form class="d-flex" role="search">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+</body>
+</html>

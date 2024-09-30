@@ -1,0 +1,59 @@
+<%- include('../../components/header.ejs') %>
+
+<div class="container mt-5">
+    <h1>Eliminar Película</h1>
+    <div class="row" id="catalogoPeliculas"></div>
+    <div id="error-message" class="alert alert-danger" style="display: none;"></div> <!-- Mensaje de error -->
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    // Función para obtener las películas
+    async function obtenerPeliculas() {
+        try {
+            const response = await axios.get('http://localhost:4000/peliculas');
+            const peliculas = response.data;
+            const catalogoPeliculas = document.getElementById('catalogoPeliculas');
+
+            peliculas.forEach(pelicula => {
+                const tarjeta = document.createElement('div');
+                tarjeta.className = 'col-md-4 mb-4';
+                tarjeta.innerHTML = `
+                    <div class="card">
+                        <img src="${pelicula.imagen}" class="card-img-top" alt="${pelicula.titulo}" style="height: 300px; object-fit: cover;">
+                        <div class="card-body">
+                            <p class="card-text"><strong>Calificación:</strong> ${pelicula.rottenTomatoesRating}</p>
+                            <button class="btn btn-danger" onclick="eliminarPelicula(${pelicula.id})">Eliminar Película</button>
+                        </div>
+                    </div>
+                `;
+                catalogoPeliculas.appendChild(tarjeta);
+            });
+        } catch (error) {
+            console.error('Error al obtener las películas:', error);
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.innerText = 'Error al cargar las películas. Intenta de nuevo más tarde.';
+            errorMessage.style.display = 'block';
+        }
+    }
+
+    // Función para eliminar una película
+    async function eliminarPelicula(id) {
+        if (confirm('¿Estás seguro de que deseas eliminar esta película?')) {
+            try {
+                const response = await axios.delete(`http://localhost:4000/peliculas/${id}`);
+                console.log('Película eliminada exitosamente', response.data);
+                alert('Película eliminada correctamente');
+                obtenerPeliculas(); // Actualizar la lista de películas después de eliminar
+            } catch (error) {
+                console.error('Error al eliminar la película:', error);
+                alert('Hubo un error al eliminar la película. Intenta de nuevo.');
+            }
+        }
+    }
+
+    // Llama a la función al cargar la página
+    window.onload = obtenerPeliculas;
+</script>
+
+<%- include('../../components/footer.ejs') %>
